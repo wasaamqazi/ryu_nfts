@@ -89,9 +89,9 @@ const Home = (props) => {
             <h2 className="second-heading">Domain Names</h2>
             <div className="rect-par"></div>
             <div className="explorebtn-wrap">
-              <button className="Explorebtn" href="#collection">
+              <a className="Explorebtn" href="#collection">
                 Explore
-              </button>
+              </a>
             </div>
           </div>
         </div>

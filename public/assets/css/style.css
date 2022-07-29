@@ -76,7 +76,7 @@ button.nav-links {
   background: linear-gradient(270deg, #FFFFFF 0%, rgba(255, 255, 255, 0) 100%);
   border-radius: 7px;
 }
-button.Explorebtn {
+.Explorebtn {
   background: none;
   border: 1px solid #fff;
   color: white;
@@ -88,6 +88,7 @@ button.Explorebtn {
   border-radius: 34.6721px;
   color: #6889BB;
   font-weight: 600;
+  text-decoration: none;
 }
 header.main-header {
   position: absolute;
@@ -110,7 +111,7 @@ h2.second-heading {
   font-size: 16px;
  
 }
-button.Explorebtn {
+.Explorebtn {
  
   margin-top: 7px;
 }
@@ -487,7 +488,7 @@ img.footerlogo {
 
 
 @media (max-width:370px) AND (min-width:270px) {
-  button.Explorebtn {
+  .Explorebtn {
    display: none;  
 }
 }
@@ -578,6 +579,7 @@ li.list-items {
 }
 .explorebtn-wrap {
   text-align: end;
+  padding-top: 30px;
 }
 li.connect-wallet {
   list-style: none;
