@@ -9,6 +9,7 @@ const Home = (props) => {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const [count, setCount] = useState(1000);
   // const [shows, setShows] = useState(false);
   // const handleShows = () => setShows(true);
   // const handleCloseS = () => setShows(false);
@@ -84,8 +85,8 @@ const Home = (props) => {
 
         <div className="texxt-wrapper">
           <div className="for-animations" data-aos="fade-up">
-            <h1 className="first-heading">A New Era For NFT Domain</h1>
-            <h2 className="second-heading">Collection</h2>
+            <h1 className="first-heading">A New Era For Web3 </h1>
+            <h2 className="second-heading">Domain Names</h2>
             <div className="rect-par"></div>
             <div className="explorebtn-wrap">
               <button className="Explorebtn" href="#collection">
@@ -115,7 +116,7 @@ const Home = (props) => {
                         <div
                           className="col-sm"
                           data-aos="flip-left"
-                          data-aos-duration="1000"
+                          data-aos-duration={count}
                         >
                           <div className="carb-body">
                             <div className="card-upper">

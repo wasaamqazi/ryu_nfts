@@ -26,12 +26,12 @@ const Header = () => {
 
                 <li className="list-items">
                   <a className="nav-links" href="/listnft">
-                    List NFT
+                    Domain
                   </a>
                 </li>
                 <li className="list-items">
                   <a className="nav-links" href="/mynfts">
-                    My NFT's
+                    Domains
                   </a>
                 </li>
               </div>
