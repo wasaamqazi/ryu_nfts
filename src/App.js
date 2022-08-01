@@ -13,10 +13,10 @@ function App() {
           <Route exact path="/">
             <Home />
           </Route>
-          <Route exact path="/mynfts">
+          <Route exact path="/mydomains">
             <Mynfts />
           </Route>
-          <Route exact path="/listnft">
+          <Route exact path="/listdomain">
             <Listnft />
           </Route>
         </Switch>

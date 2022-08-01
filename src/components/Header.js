@@ -25,13 +25,13 @@ const Header = () => {
                 </li>
 
                 <li className="list-items">
-                  <a className="nav-links" href="/listnft">
-                    Domain
+                  <a className="nav-links" href="/listdomain">
+                    List Domain
                   </a>
                 </li>
                 <li className="list-items">
-                  <a className="nav-links" href="/mynfts">
-                    Domains
+                  <a className="nav-links" href="/mydomains">
+                    My Domains
                   </a>
                 </li>
               </div>

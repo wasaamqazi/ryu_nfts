@@ -12,15 +12,15 @@ const Listnft = () => {
         <section>
           <div className="container">
             <div className="row">
-              <div className="col-sm-3"></div>
-              <div className="col-sm-6">
+              <div className="col-sm-2"></div>
+              <div className="col-sm-8">
                 <div className="upload-txt-wrap" data-aos="zoom-in">
-                  <h1 className="first-heading">Welcome to NFT World</h1>
-                  <h2 className="second-heading mynfts">Upload NFT</h2>
+                  <h1 className="first-heading">Welcome to Domain World</h1>
+                  <h2 className="second-heading mynfts">Upload Domain</h2>
                   <div className="rect-par"></div>
                 </div>
               </div>
-              <div className="col-sm-3"></div>
+              <div className="col-sm-2"></div>
             </div>
           </div>
         </section>

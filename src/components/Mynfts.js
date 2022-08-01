@@ -86,8 +86,8 @@ const Mynfts = (props) => {
 
         <div className="texxt-wrapper mynfts">
           <div className="for-animation" data-aos="fade-up">
-            <h1 className="first-heading">Welcome To NFT World</h1>
-            <h2 className="second-heading">MY NFT’S</h2>
+            <h1 className="first-heading">Welcome To Domain World</h1>
+            <h2 className="second-heading">MY Domains</h2>
             <div className="rect-par"></div>
           </div>
         </div>
@@ -98,8 +98,8 @@ const Mynfts = (props) => {
           <section className="cards-section-nfts">
             <div className="container-fluid nopadding">
               <div className="row" data-aos="fade-down">
-                <h2 className="main-title">MY NFT’S</h2>
-                <h3 className="main-sub-title">NFT's you would love</h3>
+                <h2 className="main-title">MY Domains</h2>
+                <h3 className="main-sub-title">Domains you would love</h3>
               </div>
             </div>
 

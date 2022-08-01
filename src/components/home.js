@@ -102,8 +102,8 @@ const Home = (props) => {
           <section id="collection" className="cards-section-nfts">
             <div className="container-fluid nopadding">
               <div className="row" data-aos="fade-down">
-                <h2 className="main-title">NFT Marketplace</h2>
-                <h3 className="main-sub-title">NFT's you would love</h3>
+                <h2 className="main-title">Domain Marketplace</h2>
+                <h3 className="main-sub-title">Domains you would love</h3>
               </div>
             </div>
 
