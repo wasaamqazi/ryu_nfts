@@ -1,8 +1,22 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import logo from "../assets/imgs/logo.png";
 import hambg from "../assets/imgs/hamburger.png";
-const Header = () => {
+import { connectWallet, getCurrentWalletConnected } from "../utils/interact";
+const Header = (props) => {
+  const [status, setStatus] = useState("");
+  const [walletAddress, setWalletAddress] = useState("");
+
+  useEffect(async () => {
+    const { address, status } = await getCurrentWalletConnected();
+    setWalletAddress(address);
+    setStatus(status);
+  });
+  const connectWalletPressed = async () => {
+    const walletResponse = await connectWallet();
+    setStatus(walletResponse.status);
+    setWalletAddress(walletResponse.address);
+  };
   const handleHamburger = () => {
     document.getElementById("navigation-ham").classList.toggle("mystyle");
   };
@@ -36,8 +50,20 @@ const Header = () => {
                 </li>
               </div>
               <li className="connect-wallet">
-                <button className="nav-links" href="#">
-                  Connect Wallet
+                <button
+                  className="nav-links"
+                  href="#"
+                  id="connectWallet"
+                  onClick={connectWalletPressed}
+                >
+                  {walletAddress.length > 0 ? (
+                    "Connected: " +
+                    String(walletAddress).substring(0, 6) +
+                    "..." +
+                    String(walletAddress).substring(38)
+                  ) : (
+                    <span>Connect Wallet</span>
+                  )}
                 </button>
               </li>
             </ul>
