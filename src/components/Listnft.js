@@ -47,29 +47,13 @@ const Listnft = () => {
         };
         const pinataResponse = await pinJSONToIPFS(metadata);
         if (!pinataResponse) {
-          toast.error("🦄 Error! Something went wrong", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
+          toast.error("🦄 Error! Something went wrong");
           return {
             success: false,
             message: "Something went wrong while uploading your token",
           };
         } else {
-          toast.success("🦄 File Uploaded Successfully!", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
+          toast.success("🦄 File Uploaded Successfully!");
         }
       })
       .catch(function (error) {

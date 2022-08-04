@@ -1,9 +1,11 @@
-import React, { Component, useEffect } from "react";
+import React, { Component, useEffect, CSSProperties } from "react";
 import bannerimg from "../assets/imgs/banner.png";
 import { Modal } from "react-bootstrap";
 import { useState } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
+import { mintNFT } from "../utils/interact.js";
+import ClipLoader from "react-spinners/ClipLoader";
 
 const axios = require("axios");
 
@@ -20,8 +22,18 @@ function isJsonString(str) {
   return true;
 }
 const Home = (props) => {
+  const [loadingState, setLoadingState] = useState(false);
   const [domainListArray, updatedomainListArray] = useState([]);
+  const addIPFS = (index, ipfsHash) => {
+    // Create a copy using .map()
+    const temp = domainListArray.map((data, idx) => {
+      let tempData = { ...data }; // Copy object
+      if (idx === index) tempData.ipfsHash = ipfsHash; // Set new field
+      return tempData;
+    });
 
+    updatedomainListArray(temp); // Save the copy to state
+  };
   //calling gateway pinata on page load
   useEffect(async () => {
     updatedomainListArray([]);
@@ -39,18 +51,24 @@ const Home = (props) => {
         domainCIDs.map(async (e) => {
           let url_pinata = "https://gateway.pinata.cloud/ipfs/";
           url_pinata = url_pinata + e.ipfs_pin_hash;
-          console.log(url_pinata);
+          // console.log(url_pinata);
           axios
             .post("/getDomainList", {
               url: url_pinata,
             })
             .then(async function (response) {
               // await console.log(response.data);
+
               if (isJsonString(response.data)) {
+                let responseJson = await JSON.parse(response.data);
+                console.log(responseJson);
+                responseJson.ipfsHash =
+                  "https://gateway.pinata.cloud/ipfs/" + e.ipfs_pin_hash;
                 updatedomainListArray((existingItems) => {
-                  return [...existingItems, JSON.parse(response.data)];
+                  return [...existingItems, responseJson];
                   // return existingItems.concat([getRandomNumber()]);
                 });
+                // addIPFS(domainListArray, e.ipfs_pin_hash);
                 // console.log(domainListArray);
               }
             })
@@ -63,12 +81,16 @@ const Home = (props) => {
         console.log(error);
       });
   }, []);
+  const [status, setStatus] = useState("");
 
+  const showDomainList = async (e, data) => {
+    console.log(data);
+    const { status } = await mintNFT(data.ipfsHash, data.price);
+    setStatus(status);
+  };
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = (e, data) => {
-    console.log(e);
-    console.log(data);
     setModalData(data);
     setShow(true);
   };
@@ -97,9 +119,9 @@ const Home = (props) => {
     { domain_name: "Ryusurs.avax", price: "0.09 ETH" },
     { domain_name: "Ryusurs.avax", price: "0.09 ETH" },
   ];
-  const showDomainList = () => {
-    console.log(domainListArray);
-  };
+
+  let [loading, setLoading] = useState(true);
+  let [color, setColor] = useState("#ffffff");
   return (
     <>
       {/* Pop up */}
@@ -143,9 +165,7 @@ const Home = (props) => {
           </div>
         </div>
       </Modal>
-
       <Header />
-
       <div id="Hero-section" className="mycontainer">
         <img className="img-fluid banner-img" src={bannerimg} alt="" />
 
@@ -162,7 +182,6 @@ const Home = (props) => {
           </div>
         </div>
       </div>
-
       <div className="full-bg">
         <main id="main">
           <section id="collection" className="cards-section-nfts">
@@ -170,9 +189,18 @@ const Home = (props) => {
               <div className="row" data-aos="fade-down">
                 <h2 className="main-title">Domain Marketplace</h2>
                 <h3 className="main-sub-title">Domains you would love</h3>
+                {/* <ClipLoader
+                  color={color}
+                  loading={loading}
+                  cssOverride={{
+                    display: "block",
+                    margin: "0 auto",
+                    borderColor: "blue",
+                  }}
+                  size={150}
+                /> */}
               </div>
             </div>
-
             <div className="card-wrapp">
               <div className="container">
                 <div className="row">
@@ -202,7 +230,7 @@ const Home = (props) => {
                               <div className="buy-btn-wrap">
                                 <button
                                   className="buy-btn"
-                                  onClick={showDomainList}
+                                  onClick={(e) => showDomainList(e, item)}
                                 >
                                   Buy
                                 </button>

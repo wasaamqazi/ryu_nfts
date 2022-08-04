@@ -3,6 +3,9 @@ import { Link } from "react-router-dom";
 import logo from "../assets/imgs/logo.png";
 import hambg from "../assets/imgs/hamburger.png";
 import { connectWallet, getCurrentWalletConnected } from "../utils/interact";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const Header = (props) => {
   const [status, setStatus] = useState("");
   const [walletAddress, setWalletAddress] = useState("");
@@ -30,14 +33,48 @@ const Header = (props) => {
       );
     }
   }
+  function addAccountChangedListener() {
+    if (window.ethereum) {
+      window.ethereum.on("chainChanged", (_chainId) => {
+        console.log(_chainId);
+        if (_chainId === "0xa869") {
+          window.location.reload();
+        } else {
+          toast.error("Please connect to Avalanche test network", {
+            toastId: "error1",
+          });
+        }
+      });
+    } else {
+      toast.error(
+        "You must install Metamask, a virtual Ethereum wallet, in your browser."
+      );
+    }
+  }
+  function checkAvaxConnection() {}
   useEffect(async () => {
-    const { address, status } = await getCurrentWalletConnected();
-    setWalletAddress(address);
-    setStatus(status);
+    console.log(window.ethereum);
+    addAccountChangedListener();
     addWalletListener();
-    console.log(walletAddress)
+    if (window.ethereum.chainId === "0xa869") {
+      const { address, status } = await getCurrentWalletConnected();
+      setWalletAddress(address);
+      setStatus(status);
+    } else {
+      setWalletAddress("");
+      toast.error("Please connect to Avalanche test network", {
+        toastId: "error1",
+      });
+    }
   });
   const connectWalletPressed = async () => {
+    console.log(status)
+    if (window.ethereum.chainId === "0xa869") {
+    } else {
+      toast.error("Please connect to Avalanche test network", {
+        toastId: "error1",
+      });
+    }
     const walletResponse = await connectWallet();
     setStatus(walletResponse.status);
     setWalletAddress(walletResponse.address);

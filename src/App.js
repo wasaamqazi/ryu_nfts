@@ -6,7 +6,6 @@ import Mynfts from "./components/Mynfts";
 import Listnft from "./components/Listnft";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 function App() {
   return (
     <>
@@ -33,9 +32,7 @@ function App() {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-      />
-      {/* Same as */}
-      <ToastContainer />
+      />  
     </>
   );
 }
