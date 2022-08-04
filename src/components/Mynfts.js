@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useEffect } from "react";
 import bannerimg from "../assets/imgs/bannerMYNFTs.webp";
 import { Modal } from "react-bootstrap";
 import { useState } from "react";
@@ -6,7 +6,53 @@ import { useState } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 
+const axios = require("axios");
+
+//ENV Variables
+const key = process.env.REACT_APP_PINATA_KEY;
+const secret = process.env.REACT_APP_PINATA_SECRET;
+
 const Mynfts = (props) => {
+  // Function to collect data
+
+  useEffect(async () => {
+    let url_pinata = "https://gateway.pinata.cloud/ipfs/";
+    url_pinata = url_pinata + "QmYLnJ5jh4QwAg8zwZ5bQa87YcedgUS3mmdpf3Pufa8CXG";
+
+    axios
+      .post("/getDomainList", { url: url_pinata, key: key, secret: secret })
+      .then(async function (response) {
+        await console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }, []);
+  //calling gateway pinata on page load
+  // useEffect(async () => {
+  //   console.log("hello");
+  //   let url_pinata = "https://gateway.pinata.cloud/ipfs";
+  //   url_pinata = url_pinata + "QmYLnJ5jh4QwAg8zwZ5bQa87YcedgUS3mmdpf3Pufa8CXG";
+  //   axios
+  //     .get(
+  //       url_pinata,
+  //       { crossdomain: true },
+  //       {
+  //         headers: {
+  //           "Access-Control-Allow-Origin": "*",
+  //           pinata_api_key: key,
+  //           pinata_secret_api_key: secret,
+  //         },
+  //       }
+  //     )
+  //     .then(async function (response) {
+  //       await console.log(response);
+  //     })
+  //     .catch(function (error) {
+  //       console.log(error);
+  //     });
+  // }, []);
+
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);

@@ -129,7 +129,7 @@ const Listnft = () => {
                   <input
                     className="text-input"
                     type="text"
-                    pattern="[0-9]*"
+                    pattern="^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$"
                     id="price"
                     value={price}
                     onChange={(e) => {
