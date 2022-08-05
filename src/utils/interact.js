@@ -9,8 +9,8 @@ const alchemyKey = process.env.REACT_APP_ALCHEMY_KEY;
 
 const web3 = new Web3(window.ethereum);
 
-const contractABI = require("../contract-abi.json");
-const contractAddress = "0x3fDE6852EEd613f86D3DC523F3255dDce035f57b";
+const contractABI = require("../abi/contract-abi.json");
+const contractAddress = "0xaca900166845Cb92D93D3C6D808B713A7aC7141b";
 
 export const mintNFT = async (url, price) => {
   //error handling

@@ -7,8 +7,24 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const Header = (props) => {
+  //States
+  const [adminAuth, setAdminAuth] = useState(false);
   const [status, setStatus] = useState("");
   const [walletAddress, setWalletAddress] = useState("");
+
+  //Checking Selected Address....
+  useEffect(() => {
+    if (
+      window.ethereum.selectedAddress ==
+      "0x2ed9cbb06ef4289dacded6f00f72a58b12f6bee7"
+    ) {
+      setAdminAuth(true);
+    } else {
+      setAdminAuth(false);
+    }
+  }, [walletAddress]);
+
+  //On Metamask Wallet Connection...
   function addWalletListener() {
     if (window.ethereum) {
       window.ethereum.on("accountsChanged", (accounts) => {
@@ -19,6 +35,7 @@ const Header = (props) => {
           setWalletAddress("");
           setStatus("🦊 Connect to Metamask using the top right button.");
         }
+        window.location.reload();
       });
     } else {
       setStatus(
@@ -33,12 +50,13 @@ const Header = (props) => {
       );
     }
   }
+
+  //On Metamask Account Changed....
   function addAccountChangedListener() {
     if (window.ethereum) {
       window.ethereum.on("chainChanged", (_chainId) => {
-        console.log(_chainId);
+        window.location.reload();
         if (_chainId === "0xa869") {
-          window.location.reload();
         } else {
           toast.error("Please connect to Avalanche test network", {
             toastId: "error1",
@@ -51,24 +69,22 @@ const Header = (props) => {
       );
     }
   }
-  function checkAvaxConnection() {}
+
+  //Checking Current Connected Wallet Chain ID....
   useEffect(async () => {
-    console.log(window.ethereum);
-    addAccountChangedListener();
-    addWalletListener();
     if (window.ethereum.chainId === "0xa869") {
       const { address, status } = await getCurrentWalletConnected();
       setWalletAddress(address);
       setStatus(status);
     } else {
       setWalletAddress("");
-      toast.error("Please connect to Avalanche test network", {
-        toastId: "error1",
-      });
     }
+    addAccountChangedListener();
+    addWalletListener();
   });
+
+  //On Connect Wallet Pressed...
   const connectWalletPressed = async () => {
-    console.log(status)
     if (window.ethereum.chainId === "0xa869") {
     } else {
       toast.error("Please connect to Avalanche test network", {
@@ -99,12 +115,15 @@ const Header = (props) => {
                     Marketplace
                   </a>
                 </li>
-
-                <li className="list-items">
-                  <a className="nav-links" href="/listdomain">
-                    List Domain
-                  </a>
-                </li>
+                {adminAuth ? (
+                  <li className="list-items">
+                    <a className="nav-links" href="/listdomain">
+                      List Domain
+                    </a>
+                  </li>
+                ) : (
+                  <></>
+                )}
                 <li className="list-items">
                   <a className="nav-links" href="/mydomains">
                     My Domains

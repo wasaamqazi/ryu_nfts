@@ -14,57 +14,108 @@ const secret = process.env.REACT_APP_PINATA_SECRET;
 //List NFT
 const Listnft = () => {
   //States
+  const [loadingState, setLoadingState] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [domainName, setDomainName] = useState("");
   const [price, setprice] = useState("");
   const [url, seturl] = useState("");
   const [description, setDescription] = useState("");
 
+  //Checking for validation if form fields are properly filled or not....
+  function checkValidation() {
+    if (
+      domainName == "" ||
+      domainName == null ||
+      domainName == " " ||
+      domainName == undefined
+    ) {
+      return false;
+    } else if (
+      price == "" ||
+      price == null ||
+      price == " " ||
+      price == undefined
+    ) {
+      return false;
+    } else if (url == "" || url == null || url == " " || url == undefined) {
+      return false;
+    } else if (
+      description == "" ||
+      description == null ||
+      description == " " ||
+      description == undefined
+    ) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  //List for Sell Pressed
   const onListForSellClicked = async () => {
-    const metadata = new Object();
-    const url_pinata = `https://api.pinata.cloud/data/pinList?status=pinned`;
-
-    axios
-      .get(url_pinata, {
-        headers: {
-          pinata_api_key: key,
-          pinata_secret_api_key: secret,
-        },
-      })
-      .then(async function (response) {
-        await console.log(response.data.count);
-        console.log(response.data);
-        metadata.pinataMetadata = {
-          name: response.data.count + 1 + ".json",
-        };
-        metadata.pinataContent = {
-          id: response.data.count + 1,
-          name: domainName,
-          price: price,
-          url: url,
-          image: "",
-          description: description,
-        };
-        const pinataResponse = await pinJSONToIPFS(metadata);
-        if (!pinataResponse) {
-          toast.error("🦄 Error! Something went wrong");
-          return {
-            success: false,
-            message: "Something went wrong while uploading your token",
-          };
-        } else {
-          toast.success("🦄 File Uploaded Successfully!");
-        }
-      })
-      .catch(function (error) {
-        console.log(error);
+    if (loadingState) {
+      toast.info("🦄 Please Wait!", {
+        toastId: "info1",
       });
+    } else {
+      if (checkValidation() == false) {
+        toast.error(" All fields are mandatory and must be valid!", {
+          toastId: "errorValidation",
+        });
+      } else {
+        const metadata = new Object();
+        const url_pinata = `https://api.pinata.cloud/data/pinList?status=pinned`;
+        setLoadingState(true);
 
-    // console.log(metadata);
+        //Getting total counts of previoulsy listed nfts
+        axios
+          .get(url_pinata, {
+            headers: {
+              pinata_api_key: key,
+              pinata_secret_api_key: secret,
+            },
+          })
+          .then(async function (response) {
+            //Creating new metadata to be saved in ipfs in JSON format
+            metadata.pinataMetadata = {
+              name: response.data.count + 1 + ".json",
+            };
+            metadata.pinataContent = {
+              id: response.data.count + 1,
+              name: domainName,
+              price: price,
+              url: url,
+              image: "",
+              description: description,
+            };
+
+            //Saving listed NFT to pinata
+            const pinataResponse = await pinJSONToIPFS(metadata);
+
+            //on error
+            if (!pinataResponse) {
+              setLoadingState(false);
+              toast.error("🦄 Error! Something went wrong");
+              return {
+                success: false,
+                message: "Something went wrong while uploading your token",
+              };
+            } else {
+              //Successfully uploaded to ipfs
+              setLoadingState(false);
+              toast.success("🦄 File Uploaded Successfully!");
+            }
+          })
+          .catch(function (error) {
+            //Error
+            setLoadingState(false);
+            toast.error("🦄 Error! Something went wrong");
+            console.log(error);
+          });
+      }
+    }
   };
-  const test = () => {
-    console.log("test");
-  };
+
   return (
     <>
       <Header />
@@ -125,6 +176,9 @@ const Listnft = () => {
                 </div>
               </div>
               <div className="row upload-nft-form justify-content-center row3">
+                <div className="loader-container">
+                  {loadingState ? <div className="loader"></div> : <></>}
+                </div>
                 <div className="col-sm-4">
                   <label htmlFor="" className="upload-nft-label">
                     URL :

@@ -5,38 +5,34 @@ import { useState } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import { mintNFT } from "../utils/interact.js";
-import ClipLoader from "react-spinners/ClipLoader";
+import { toast } from "react-toastify";
 
 const axios = require("axios");
 
 //ENV Variables
 const key = process.env.REACT_APP_PINATA_KEY;
 const secret = process.env.REACT_APP_PINATA_SECRET;
+
+//Checking if string is in JSON format or Not...
 function isJsonString(str) {
   try {
     JSON.parse(str);
-    // console.log(JSON.parse(str))
   } catch (e) {
     return false;
   }
   return true;
 }
+
+//Home Component
 const Home = (props) => {
   const [loadingState, setLoadingState] = useState(false);
   const [domainListArray, updatedomainListArray] = useState([]);
-  const addIPFS = (index, ipfsHash) => {
-    // Create a copy using .map()
-    const temp = domainListArray.map((data, idx) => {
-      let tempData = { ...data }; // Copy object
-      if (idx === index) tempData.ipfsHash = ipfsHash; // Set new field
-      return tempData;
-    });
 
-    updatedomainListArray(temp); // Save the copy to state
-  };
   //calling gateway pinata on page load
   useEffect(async () => {
+    //Getting NFTs from ipfs for marketplace
     updatedomainListArray([]);
+    setLoadingState(true);
     axios
       .get(`https://api.pinata.cloud/data/pinList?status=pinned`, {
         headers: {
@@ -45,55 +41,63 @@ const Home = (props) => {
         },
       })
       .then(async function (response) {
-        // await console.log(response.data.count);
-        // console.log(response.data.rows);
+        //NFTs received...
         let domainCIDs = response.data.rows;
         domainCIDs.map(async (e) => {
           let url_pinata = "https://gateway.pinata.cloud/ipfs/";
           url_pinata = url_pinata + e.ipfs_pin_hash;
-          // console.log(url_pinata);
           axios
             .post("/getDomainList", {
               url: url_pinata,
             })
             .then(async function (response) {
-              // await console.log(response.data);
-
               if (isJsonString(response.data)) {
+                //Mapping NFTs to cards...
                 let responseJson = await JSON.parse(response.data);
-                console.log(responseJson);
                 responseJson.ipfsHash =
                   "https://gateway.pinata.cloud/ipfs/" + e.ipfs_pin_hash;
                 updatedomainListArray((existingItems) => {
                   return [...existingItems, responseJson];
-                  // return existingItems.concat([getRandomNumber()]);
                 });
-                // addIPFS(domainListArray, e.ipfs_pin_hash);
-                // console.log(domainListArray);
               }
+              setLoadingState(false);
             })
             .catch(function (error) {
+              //On error...
+              setLoadingState(false);
+              toast.error("Something went wrong!", {
+                toastId: "error1",
+              });
               console.log(error);
             });
         });
       })
       .catch(function (error) {
+        //On error...
+        setLoadingState(false);
+        toast.error("Something went wrong!", {
+          toastId: "error1",
+        });
         console.log(error);
       });
   }, []);
   const [status, setStatus] = useState("");
 
-  const showDomainList = async (e, data) => {
-    console.log(data);
+  //Buy and Mint button clicked...
+  const buyAndMint = async (e, data) => {
     const { status } = await mintNFT(data.ipfsHash, data.price);
     setStatus(status);
   };
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
+
+  //Show full details modal...
   const handleShow = (e, data) => {
     setModalData(data);
     setShow(true);
   };
+
+  //Clicking on Full Details update modalData variable with its item details...
   const [modalData, setModalData] = useState({
     id: "0",
     name: "",
@@ -102,9 +106,7 @@ const Home = (props) => {
     url: "",
   });
   const [count, setCount] = useState(1000);
-  // const [shows, setShows] = useState(false);
-  // const handleShows = () => setShows(true);
-  // const handleCloseS = () => setShows(false);
+
   const domaindetails = [
     { domain_name: "Ryusurs.avax", price: "0.09 ETH" },
     { domain_name: "Ryusurs.avax", price: "0.09 ETH" },
@@ -120,8 +122,6 @@ const Home = (props) => {
     { domain_name: "Ryusurs.avax", price: "0.09 ETH" },
   ];
 
-  let [loading, setLoading] = useState(true);
-  let [color, setColor] = useState("#ffffff");
   return (
     <>
       {/* Pop up */}
@@ -158,7 +158,10 @@ const Home = (props) => {
             </div>
 
             <div className="buy-btn-wrap">
-              <button className="buy-btn" onClick={handleClose}>
+              <button
+                className="buy-btn"
+                onClick={(e) => buyAndMint(e, modalData)}
+              >
                 Buy
               </button>
             </div>
@@ -189,21 +192,15 @@ const Home = (props) => {
               <div className="row" data-aos="fade-down">
                 <h2 className="main-title">Domain Marketplace</h2>
                 <h3 className="main-sub-title">Domains you would love</h3>
-                {/* <ClipLoader
-                  color={color}
-                  loading={loading}
-                  cssOverride={{
-                    display: "block",
-                    margin: "0 auto",
-                    borderColor: "blue",
-                  }}
-                  size={150}
-                /> */}
               </div>
             </div>
             <div className="card-wrapp">
               <div className="container">
                 <div className="row">
+                  {" "}
+                  <div className="loader-container">
+                    {loadingState ? <div className="loader"></div> : <></>}
+                  </div>
                   {domaindetails.length > 0 ? (
                     domainListArray.map((item, index) => {
                       return (
@@ -211,7 +208,7 @@ const Home = (props) => {
                           className="col-sm"
                           data-aos="flip-left"
                           data-aos-duration={count}
-                          id={item.id}
+                          key={item.id}
                         >
                           <div className="carb-body">
                             <div className="card-upper">
@@ -230,7 +227,7 @@ const Home = (props) => {
                               <div className="buy-btn-wrap">
                                 <button
                                   className="buy-btn"
-                                  onClick={(e) => showDomainList(e, item)}
+                                  onClick={(e) => buyAndMint(e, item)}
                                 >
                                   Buy
                                 </button>
