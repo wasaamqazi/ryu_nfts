@@ -2,25 +2,37 @@ import React, { Component, useEffect } from "react";
 import bannerimg from "../assets/imgs/bannerMYNFTs.webp";
 import { Modal } from "react-bootstrap";
 import { useState } from "react";
-
 import Header from "./Header";
 import Footer from "./Footer";
 import { toast } from "react-toastify";
 import Web3 from "web3/dist/web3.min.js";
 
 //ABIs
-
 const contractABI = require("../abi/contract-abi.json");
 const contractAddress = "0xaca900166845Cb92D93D3C6D808B713A7aC7141b";
 
 const axios = require("axios");
 
-//ENV Variables
-const key = process.env.REACT_APP_PINATA_KEY;
-const secret = process.env.REACT_APP_PINATA_SECRET;
-
 const Mynfts = (props) => {
+  //States
   const [userNFTData, setUserNFTData] = useState([]);
+
+  //Clicking on Full Details update modalData variable with its item details...
+  const [modalData, setModalData] = useState({
+    id: "0",
+    name: "",
+    price: "",
+    description: "",
+    url: "",
+  });
+  const [loadingState, setLoadingState] = useState(false);
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = (e, data) => {
+    setModalData(data);
+    setShow(true);
+  };
+
   //Function to get user's nfts
   const getData = async () => {
     //Loading Show
@@ -35,31 +47,18 @@ const Mynfts = (props) => {
         contractABI,
         contractAddress
       );
-      console.log(window.contract.methods);
-      console.log(window.ethereum.selectedAddress);
-
-      // //test
-
-      // const nfts_data_temp = await window.contract.methods.totalSupply().call();
-      // console.log("nfts_data: ", nfts_data);
-      // //
-
       const nfts_data = await window.contract.methods
         .Check_TokenID(window.ethereum.selectedAddress)
         .call();
-      console.log("nfts_data: ", nfts_data);
-
-      //loop
+      //loop for fetching tokenIDs
       for (var i = 0; i < nfts_data.length; i++) {
         const url = await window.contract.methods.tokenURI(nfts_data[i]).call();
-        console.log(url);
         const response = await fetch(url);
         if (!response.ok) {
           throw new Error("Something went wrong!");
         }
-
         const data = await response.json();
-        console.log(data);
+        //Settings data
         const temp_data = {
           description: data.description,
           id: data.id,
@@ -73,7 +72,6 @@ const Mynfts = (props) => {
           return [...existingItems, temp_data];
         });
         setLoadingState(false);
-      
       }
     } catch (err) {
       setLoadingState(false);
@@ -86,41 +84,6 @@ const Mynfts = (props) => {
   useEffect(async () => {
     getData();
   }, []);
-
-  const [modalData, setModalData] = useState({
-    id: "0",
-    name: "",
-    price: "",
-    description: "",
-    url: "",
-  });
-  const [loadingState, setLoadingState] = useState(false);
-
-  const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
-  const handleShow = (e, data) => {
-    console.log(data);
-    setModalData(data);
-    setShow(true);
-  };
-
-  // const [shows, setShows] = useState(false);
-  // const handleShows = () => setShows(true);
-  // const handleCloseS = () => setShows(false);
-  const domaindetails = [
-    { domain_name: "Ryusurs.avax", price: "0.09 ETH" },
-    { domain_name: "Ryusurs.avax", price: "0.09 ETH" },
-    { domain_name: "Ryusurs.avax", price: "0.09 ETH" },
-    { domain_name: "Ryusurs.avax", price: "0.09 ETH" },
-    { domain_name: "Ryusurs.avax", price: "0.09 ETH" },
-    { domain_name: "Ryusurs.avax", price: "0.09 ETH" },
-    { domain_name: "Ryusurs.avax", price: "0.09 ETH" },
-    { domain_name: "Ryusurs.avax", price: "0.09 ETH" },
-    { domain_name: "Ryusurs.avax", price: "0.09 ETH" },
-    { domain_name: "Ryusurs.avax", price: "0.09 ETH" },
-    { domain_name: "Ryusurs.avax", price: "0.09 ETH" },
-    { domain_name: "Ryusurs.avax", price: "0.09 ETH" },
-  ];
 
   return (
     <>
@@ -220,9 +183,6 @@ const Mynfts = (props) => {
                                   Full Details
                                 </button>
                               </div>
-                              {/* <div className="buy-btn-wrap">
-                                <button className="buy-btn">Buy</button>
-                              </div> */}
                             </div>
                           </div>
                         </div>

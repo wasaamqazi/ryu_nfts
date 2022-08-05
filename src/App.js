@@ -37,11 +37,9 @@ function App() {
           <Route exact path="/mydomains">
             <Mynfts />
           </Route>
-          <Route
-            exact
-            path="/listdomain"
-            render={() => (adminAuth ? <Listnft /> : <Home />)}
-          ></Route>
+          <Route exact path="/listdomain">
+            <Listnft />
+          </Route>
         </Switch>
       </Router>
       <ToastContainer

@@ -4,6 +4,7 @@ import Footer from "./Footer";
 import Header from "./Header";
 import validator from "validator";
 import { ToastContainer, toast } from "react-toastify";
+import { useHistory } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 const axios = require("axios");
 
@@ -13,6 +14,8 @@ const secret = process.env.REACT_APP_PINATA_SECRET;
 
 //List NFT
 const Listnft = () => {
+  const history = useHistory();
+
   //States
   const [loadingState, setLoadingState] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -104,6 +107,7 @@ const Listnft = () => {
               //Successfully uploaded to ipfs
               setLoadingState(false);
               toast.success("🦄 File Uploaded Successfully!");
+              history.push("/");
             }
           })
           .catch(function (error) {

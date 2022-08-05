@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import logo from "../assets/imgs/logo.png";
 import hambg from "../assets/imgs/hamburger.png";
 import { connectWallet, getCurrentWalletConnected } from "../utils/interact";
@@ -7,6 +7,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const Header = (props) => {
+  const history = useHistory();
   //States
   const [adminAuth, setAdminAuth] = useState(false);
   const [status, setStatus] = useState("");
@@ -21,6 +22,9 @@ const Header = (props) => {
       setAdminAuth(true);
     } else {
       setAdminAuth(false);
+      if (window.location.pathname == "/listdomain") {
+        history.push("/");
+      }
     }
   }, [walletAddress]);
 

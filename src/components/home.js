@@ -1,4 +1,5 @@
-import React, { Component, useEffect, CSSProperties } from "react";
+import React, { Component, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import bannerimg from "../assets/imgs/banner.png";
 import { Modal } from "react-bootstrap";
 import { useState } from "react";
@@ -8,7 +9,6 @@ import { mintNFT } from "../utils/interact.js";
 import { toast } from "react-toastify";
 
 const axios = require("axios");
-
 //ENV Variables
 const key = process.env.REACT_APP_PINATA_KEY;
 const secret = process.env.REACT_APP_PINATA_SECRET;
@@ -25,6 +25,7 @@ function isJsonString(str) {
 
 //Home Component
 const Home = (props) => {
+  const history = useHistory();
   const [loadingState, setLoadingState] = useState(false);
   const [domainListArray, updatedomainListArray] = useState([]);
 
@@ -46,30 +47,43 @@ const Home = (props) => {
         domainCIDs.map(async (e) => {
           let url_pinata = "https://gateway.pinata.cloud/ipfs/";
           url_pinata = url_pinata + e.ipfs_pin_hash;
-          axios
-            .post("/getDomainList", {
-              url: url_pinata,
-            })
-            .then(async function (response) {
-              if (isJsonString(response.data)) {
-                //Mapping NFTs to cards...
-                let responseJson = await JSON.parse(response.data);
-                responseJson.ipfsHash =
-                  "https://gateway.pinata.cloud/ipfs/" + e.ipfs_pin_hash;
-                updatedomainListArray((existingItems) => {
-                  return [...existingItems, responseJson];
-                });
-              }
-              setLoadingState(false);
-            })
-            .catch(function (error) {
-              //On error...
-              setLoadingState(false);
-              toast.error("Something went wrong!", {
-                toastId: "error1",
-              });
-              console.log(error);
-            });
+          const response = await fetch(url_pinata);
+          if (!response.ok) {
+            throw new Error("Something went wrong!");
+          }
+          setLoadingState(false);
+
+          const data = await response.json();
+          console.log(data);
+          data.ipfsHash =
+            "https://gateway.pinata.cloud/ipfs/" + e.ipfs_pin_hash;
+          updatedomainListArray((existingItems) => {
+            return [...existingItems, data];
+          });
+          // axios
+          //   .post("/getDomainList", {
+          //     url: url_pinata,
+          //   })
+          //   .then(async function (response) {
+          //     if (isJsonString(response.data)) {
+          //       //Mapping NFTs to cards...
+          //       let responseJson = await JSON.parse(response.data);
+          //       responseJson.ipfsHash =
+          //         "https://gateway.pinata.cloud/ipfs/" + e.ipfs_pin_hash;
+          //       updatedomainListArray((existingItems) => {
+          //         return [...existingItems, responseJson];
+          //       });
+          //     }
+          //     setLoadingState(false);
+          //   })
+          //   .catch(function (error) {
+          //     //On error...
+          //     setLoadingState(false);
+          //     toast.error("Something went wrong!", {
+          //       toastId: "error1",
+          //     });
+          //     console.log(error);
+          //   });
         });
       })
       .catch(function (error) {
@@ -86,6 +100,7 @@ const Home = (props) => {
   //Buy and Mint button clicked...
   const buyAndMint = async (e, data) => {
     const { status } = await mintNFT(data.ipfsHash, data.price);
+    history.push("/mydomains");
     setStatus(status);
   };
   const [show, setShow] = useState(false);
