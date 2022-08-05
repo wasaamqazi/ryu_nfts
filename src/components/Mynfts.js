@@ -189,7 +189,7 @@ const Mynfts = (props) => {
                       );
                     })
                   ) : (
-                    <div></div>
+                    <div> <h3 className="main-sub-title">YOU HAVE NOT BOUGHT ANY DOMAIN YET!</h3></div>
                   )}
                 </div>
               </div>

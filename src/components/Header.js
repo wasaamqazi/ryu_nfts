@@ -6,6 +6,7 @@ import { connectWallet, getCurrentWalletConnected } from "../utils/interact";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+const admin_wallet_address = process.env.REACT_APP_ADMIN_WALLET;
 const Header = (props) => {
   const history = useHistory();
   //States
@@ -15,10 +16,7 @@ const Header = (props) => {
 
   //Checking Selected Address....
   useEffect(() => {
-    if (
-      window.ethereum.selectedAddress ==
-      "0x2ed9cbb06ef4289dacded6f00f72a58b12f6bee7"
-    ) {
+    if (window.ethereum.selectedAddress.toString().toLowerCase() == admin_wallet_address.toString().toLowerCase()) {
       setAdminAuth(true);
     } else {
       setAdminAuth(false);
@@ -82,6 +80,9 @@ const Header = (props) => {
       setStatus(status);
     } else {
       setWalletAddress("");
+      toast.error("Please connect to Avalanche test network", {
+        toastId: "error1",
+      });
     }
     addAccountChangedListener();
     addWalletListener();

@@ -54,12 +54,14 @@ const Home = (props) => {
           setLoadingState(false);
 
           const data = await response.json();
-          console.log(data);
           data.ipfsHash =
             "https://gateway.pinata.cloud/ipfs/" + e.ipfs_pin_hash;
+          //Setting data into data state
           updatedomainListArray((existingItems) => {
             return [...existingItems, data];
           });
+
+          //Node Server Logic ( Currently not being used).....
           // axios
           //   .post("/getDomainList", {
           //     url: url_pinata,
@@ -100,6 +102,7 @@ const Home = (props) => {
   //Buy and Mint button clicked...
   const buyAndMint = async (e, data) => {
     const { status } = await mintNFT(data.ipfsHash, data.price);
+    await this.timeout(1000);
     history.push("/mydomains");
     setStatus(status);
   };
@@ -216,7 +219,7 @@ const Home = (props) => {
                   <div className="loader-container">
                     {loadingState ? <div className="loader"></div> : <></>}
                   </div>
-                  {domaindetails.length > 0 ? (
+                  {domainListArray.length > 0 ? (
                     domainListArray.map((item, index) => {
                       return (
                         <div
@@ -253,7 +256,9 @@ const Home = (props) => {
                       );
                     })
                   ) : (
-                    <div></div>
+                    <div>
+                      <h3 className="main-sub-title">NO DOMAINS LISTED</h3>
+                    </div>
                   )}
                 </div>
               </div>

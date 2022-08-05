@@ -2,6 +2,7 @@ import { pinJSONToIPFS } from "./pinata.js";
 import Web3 from "web3/dist/web3.min.js";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import createBrowserHistory from "../utils/history";
 
 const alchemyKey = process.env.REACT_APP_ALCHEMY_KEY;
 // const { createAlchemyWeb3 } = require("@alch/alchemy-web3");
@@ -14,7 +15,6 @@ const contractAddress = "0xaca900166845Cb92D93D3C6D808B713A7aC7141b";
 
 export const mintNFT = async (url, price) => {
   //error handling
-  console.log(url);
   if (url.trim() == "") {
     return {
       success: false,
@@ -22,9 +22,6 @@ export const mintNFT = async (url, price) => {
     };
   }
   var weiValue = web3.utils.toWei(price, "ether");
-  console.log(weiValue);
-
-  // console.log("Methods", window.contract.methods);
 
   try {
     window.contract = await new web3.eth.Contract(contractABI, contractAddress);
@@ -42,8 +39,12 @@ export const mintNFT = async (url, price) => {
       params: [transactionParameters],
     });
     toast("Transaction Successfully!");
-    await this.timeout(3000);
-    window.location.reload(false);
+    await setTimeout(() => {
+      createBrowserHistory.push("/mydomains");
+     window.location.reload(true);
+
+    }, 3000);
+    //  window.location.reload(false);
   } catch (err) {
     console.log(err);
   }
