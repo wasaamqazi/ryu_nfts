@@ -7,24 +7,13 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const admin_wallet_address = process.env.REACT_APP_ADMIN_WALLET;
+
 const Header = (props) => {
   const history = useHistory();
   //States
   const [adminAuth, setAdminAuth] = useState(false);
   const [status, setStatus] = useState("");
   const [walletAddress, setWalletAddress] = useState("");
-
-  //Checking Selected Address....
-  useEffect(() => {
-    if (window.ethereum.selectedAddress.toString().toLowerCase() == admin_wallet_address.toString().toLowerCase()) {
-      setAdminAuth(true);
-    } else {
-      setAdminAuth(false);
-      if (window.location.pathname == "/listdomain") {
-        history.push("/");
-      }
-    }
-  }, [walletAddress]);
 
   //On Metamask Wallet Connection...
   function addWalletListener() {
@@ -76,9 +65,21 @@ const Header = (props) => {
   useEffect(async () => {
     if (window.ethereum.chainId === "0xa869") {
       const { address, status } = await getCurrentWalletConnected();
+      if (address.toString().toLowerCase() == admin_wallet_address.toString().toLowerCase()) {
+        setAdminAuth(true);
+      } else {
+        setAdminAuth(false);
+        if (window.location.pathname == "/listdomain") {
+          history.push("/");
+        }
+      }
       setWalletAddress(address);
       setStatus(status);
     } else {
+      setAdminAuth(false);
+      if (window.location.pathname == "/listdomain") {
+        history.push("/");
+      }
       setWalletAddress("");
       toast.error("Please connect to Avalanche test network", {
         toastId: "error1",
@@ -91,15 +92,16 @@ const Header = (props) => {
   //On Connect Wallet Pressed...
   const connectWalletPressed = async () => {
     if (window.ethereum.chainId === "0xa869") {
+      const walletResponse = await connectWallet();
+      setStatus(walletResponse.status);
+      setWalletAddress(walletResponse.address);
     } else {
       toast.error("Please connect to Avalanche test network", {
         toastId: "error1",
       });
     }
-    const walletResponse = await connectWallet();
-    setStatus(walletResponse.status);
-    setWalletAddress(walletResponse.address);
   };
+
   const handleHamburger = () => {
     document.getElementById("navigation-ham").classList.toggle("mystyle");
   };

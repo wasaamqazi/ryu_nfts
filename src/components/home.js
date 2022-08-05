@@ -9,6 +9,7 @@ import { mintNFT } from "../utils/interact.js";
 import { toast } from "react-toastify";
 
 const axios = require("axios");
+
 //ENV Variables
 const key = process.env.REACT_APP_PINATA_KEY;
 const secret = process.env.REACT_APP_PINATA_SECRET;
@@ -31,9 +32,14 @@ const Home = (props) => {
 
   //calling gateway pinata on page load
   useEffect(async () => {
-    //Getting NFTs from ipfs for marketplace
-    updatedomainListArray([]);
+    // //Getting NFTs from ipfs for marketplace
+    // updatedomainListArray([]);
     setLoadingState(true);
+    await getData();
+  }, []);
+
+  //GetData
+  const getData = async () => {
     axios
       .get(`https://api.pinata.cloud/data/pinList?status=pinned`, {
         headers: {
@@ -96,7 +102,8 @@ const Home = (props) => {
         });
         console.log(error);
       });
-  }, []);
+  };
+
   const [status, setStatus] = useState("");
 
   //Buy and Mint button clicked...
@@ -106,6 +113,7 @@ const Home = (props) => {
     history.push("/mydomains");
     setStatus(status);
   };
+
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
 
@@ -124,21 +132,6 @@ const Home = (props) => {
     url: "",
   });
   const [count, setCount] = useState(1000);
-
-  const domaindetails = [
-    { domain_name: "Ryusurs.avax", price: "0.09 ETH" },
-    { domain_name: "Ryusurs.avax", price: "0.09 ETH" },
-    { domain_name: "Ryusurs.avax", price: "0.09 ETH" },
-    { domain_name: "Ryusurs.avax", price: "0.09 ETH" },
-    { domain_name: "Ryusurs.avax", price: "0.09 ETH" },
-    { domain_name: "Ryusurs.avax", price: "0.09 ETH" },
-    { domain_name: "Ryusurs.avax", price: "0.09 ETH" },
-    { domain_name: "Ryusurs.avax", price: "0.09 ETH" },
-    { domain_name: "Ryusurs.avax", price: "0.09 ETH" },
-    { domain_name: "Ryusurs.avax", price: "0.09 ETH" },
-    { domain_name: "Ryusurs.avax", price: "0.09 ETH" },
-    { domain_name: "Ryusurs.avax", price: "0.09 ETH" },
-  ];
 
   return (
     <>

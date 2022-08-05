@@ -1,5 +1,8 @@
-const key = process.env.REACT_APP_PINATA_KEY;
-const secret = process.env.REACT_APP_PINATA_SECRET;
+// const key = process.env.REACT_APP_PINATA_KEY;
+// const secret = process.env.REACT_APP_PINATA_SECRET;
+
+const key = "2b0109d7bec55ce6703a";
+const secret = "c0747691dff26870caf2b45d64282a1d0bf35f66d224c3ed0bd32da2491e004f";
 
 const axios = require("axios");
 

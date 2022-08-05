@@ -12,19 +12,8 @@ import Listnft from "./components/Listnft";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useState, useEffect } from "react";
-const admin_wallet_address = process.env.REACT_APP_ADMIN_WALLET;
-function App() {
-  const [adminAuth, setAdminAuth] = useState(false);
-  const [walletAddress, setWalletAddress] = useState("");
 
-  useEffect(() => {
-    setWalletAddress(window.ethereum.selectedAddress);
-    if (window.ethereum.selectedAddress.toString().toLowerCase() == admin_wallet_address.toString().toLowerCase()) {
-      setAdminAuth(true);
-    } else {
-      setAdminAuth(false);
-    }
-  }, [walletAddress]);
+function App() {
   return (
     <>
       <Router>

@@ -4,10 +4,6 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import createBrowserHistory from "../utils/history";
 
-const alchemyKey = process.env.REACT_APP_ALCHEMY_KEY;
-// const { createAlchemyWeb3 } = require("@alch/alchemy-web3");
-// const web3 = createAlchemyWeb3(alchemyKey);
-
 const web3 = new Web3(window.ethereum);
 
 const contractABI = require("../abi/contract-abi.json");
