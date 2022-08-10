@@ -247,9 +247,9 @@ const Home = (props) => {
                   {/* Filter  */}
                   <div className="col-sm customSearchDiv">
                     <input
-                      style={{ width: "25%" }}
+                     
                       placeholder="Search"
-                      className="text-input searchFilterContents"
+                      className="text-input searchFilterContents customSearchBar"
                       type="text"
                       pattern={searchPattern}
                       value={searchField}

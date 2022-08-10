@@ -97,6 +97,9 @@ input[type="range"]::-webkit-slider-thumb:active {
   .minAndMax {
     width: 5% !important;
   }
+  .customSearchBar {
+    width: 25% !important;
+  }
 }
 /*
 Media
@@ -117,5 +120,11 @@ Media
   .searchFilterContents {
     margin-right: 2rem;
     margin-bottom: 1rem;
+  }
+  .customSearchBar {
+    width: 100% !important;
+  }
+  .customMultiRange {
+    width: 100% !important;
   }
 }
