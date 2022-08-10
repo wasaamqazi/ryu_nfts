@@ -41,6 +41,7 @@ const Mynfts = (props) => {
     //Geting NFTs
     setUserNFTData([]);
     const web3 = new Web3(window.ethereum);
+    await window.ethereum.enable();
     var nftData = [];
     try {
       window.contract = await new web3.eth.Contract(
@@ -71,6 +72,9 @@ const Mynfts = (props) => {
         setUserNFTData((existingItems) => {
           return [...existingItems, temp_data];
         });
+        setLoadingState(false);
+      }
+      if (nfts_data.length == 0) {
         setLoadingState(false);
       }
     } catch (err) {
@@ -189,7 +193,12 @@ const Mynfts = (props) => {
                       );
                     })
                   ) : (
-                    <div> <h3 className="main-sub-title">YOU HAVE NOT BOUGHT ANY DOMAIN YET!</h3></div>
+                    <div>
+                      {" "}
+                      <h3 className="main-sub-title">
+                        YOU HAVE NOT BOUGHT ANY DOMAIN YET!
+                      </h3>
+                    </div>
                   )}
                 </div>
               </div>

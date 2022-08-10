@@ -5,7 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import createBrowserHistory from "../utils/history";
 
 const web3 = new Web3(window.ethereum);
-
+// await window.ethereum.enable();
 const contractABI = require("../abi/contract-abi.json");
 const contractAddress = "0xaca900166845Cb92D93D3C6D808B713A7aC7141b";
 
