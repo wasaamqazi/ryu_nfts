@@ -17,6 +17,7 @@ const Header = (props) => {
 
   //On Metamask Wallet Connection...
   function addWalletListener() {
+    window.ethereum.enable();
     if (window.ethereum) {
       window.ethereum.on("accountsChanged", (accounts) => {
         if (accounts.length > 0) {
@@ -63,6 +64,7 @@ const Header = (props) => {
 
   //Checking Current Connected Wallet Chain ID....
   useEffect(async () => {
+    await window.ethereum.enable();
     if (window.ethereum.chainId === "0xa869") {
       const { address, status } = await getCurrentWalletConnected();
       if (address.toString().toLowerCase() == admin_wallet_address.toString().toLowerCase()) {
@@ -91,6 +93,7 @@ const Header = (props) => {
 
   //On Connect Wallet Pressed...
   const connectWalletPressed = async () => {
+    await window.ethereum.enable();
     if (window.ethereum.chainId === "0xa869") {
       const walletResponse = await connectWallet();
       setStatus(walletResponse.status);
