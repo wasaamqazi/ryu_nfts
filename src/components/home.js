@@ -7,6 +7,7 @@ import Header from "./Header";
 import Footer from "./Footer";
 import { mintNFT } from "../utils/interact.js";
 import { toast } from "react-toastify";
+import MultiRangeSlider from "multi-range-slider-react";
 
 const axios = require("axios");
 
@@ -23,21 +24,44 @@ function isJsonString(str) {
   }
   return true;
 }
-
+const MIN = 0.001;
+const MAX = 10;
 //Home Component
 const Home = (props) => {
   const history = useHistory();
   const [loadingState, setLoadingState] = useState(false);
   const [domainListArray, updatedomainListArray] = useState([]);
-
+  //Clicking on Full Details update modalData variable with its item details...
+  const [modalData, setModalData] = useState({
+    id: "0",
+    name: "",
+    price: "",
+    description: "",
+    url: "",
+  });
+  const [count, setCount] = useState(1000);
+  const [searchField, setSearchField] = useState("");
+  const [searchPattern, setSearchPattern] = useState("(.*?)");
+  const [filteredArray, setFilteredArray] = useState([]);
+  const [priceRange, setPriceRange] = useState(0.001);
+  const [minValue, set_minValue] = useState(0.001);
+  const [maxValue, set_maxValue] = useState(10);
   //calling gateway pinata on page load
   useEffect(async () => {
     // //Getting NFTs from ipfs for marketplace
     // updatedomainListArray([]);
     setLoadingState(true);
     await getData();
-  }, []);
+    // const filtered2 = domainListArray.filter((obj) => {
+    //   return obj.name === "youtube.avax";
+    // });
 
+    // console.log("filtered2: ", filtered2);
+  }, []);
+  useEffect(async () => {
+    setFilteredArray(domainListArray);
+    console.log(filteredArray);
+  }, [domainListArray]);
   //GetData
   const getData = async () => {
     axios
@@ -62,6 +86,16 @@ const Home = (props) => {
           const data = await response.json();
           data.ipfsHash =
             "https://gateway.pinata.cloud/ipfs/" + e.ipfs_pin_hash;
+          // console.log(data);
+          // 👇️ filter with 1 condition
+          // const filtered = await Object.keys(data).filter((key) => {
+          //   // console.log(key);
+          //   if (key == "name") {
+          //     console.log(data[key]);
+          //     if (data[key].includes("youtube")) return data;
+          //   }
+          // });
+
           //Setting data into data state
           updatedomainListArray((existingItems) => {
             return [...existingItems, data];
@@ -122,17 +156,40 @@ const Home = (props) => {
     setModalData(data);
     setShow(true);
   };
-
-  //Clicking on Full Details update modalData variable with its item details...
-  const [modalData, setModalData] = useState({
-    id: "0",
-    name: "",
-    price: "",
-    description: "",
-    url: "",
-  });
-  const [count, setCount] = useState(1000);
-
+  // Triggered when the value gets updated while scrolling the slider:
+  const handleInput = (e) => {
+    setPriceRange(e.target.value);
+  };
+  const multiRangeHandleInput = (e) => {
+    set_minValue(e.minValue);
+    set_maxValue(e.maxValue);
+  };
+  const filterDataWithName = async (searchField) => {
+    console.log(searchField);
+    console.log(priceRange);
+    setFilteredArray(
+      await domainListArray.filter((obj) => {
+        console.log(obj.price);
+        console.log(priceRange);
+        // return obj.name.includes(searchField) && obj.price === priceRange;
+        return (
+          obj.name.includes(searchField) &&
+          obj.price >= minValue &&
+          obj.price <= maxValue
+        );
+      })
+    );
+    console.log("filtered2: ", filteredArray);
+  };
+  const handleKeyPress = async (e) => {
+    if (e.key === "Enter") {
+      await filterDataWithName(searchField);
+    }
+  };
+  const getBackgroundSize = () => {
+    return { backgroundSize: `${(priceRange * 100) / MAX}% 100%` };
+  };
+  //Return Function
   return (
     <>
       {/* Pop up */}
@@ -209,11 +266,89 @@ const Home = (props) => {
               <div className="container">
                 <div className="row">
                   {" "}
+                  {/* Filter  */}
+                  <div
+                    className="col-sm"
+                    style={{ display: "flex", textAlign: "center" }}
+                  >
+                    <input
+                      style={{ width: "25%" }}
+                      placeholder="Search"
+                      className="text-input searchFilterContents"
+                      type="text"
+                      pattern={searchPattern}
+                      value={searchField}
+                      onKeyDown={handleKeyPress}
+                      onChange={(e) => {
+                        setSearchField((p) =>
+                          e.target.validity.valid ? e.target.value : p
+                        );
+                      }}
+                    />
+                    {/* Price Range */}
+                    <MultiRangeSlider
+                      baseClassName="multi-range-slider customMultiRange searchFilterContents"
+                      min={0.001}
+                      max={10}
+                      step={0.001}
+                      ruler={false}
+                      label={true}
+                      preventWheel={false}
+                      minValue={minValue}
+                      maxValue={maxValue}
+                      onInput={(e) => {
+                        multiRangeHandleInput(e);
+                      }}
+                    />
+                    {/* <input
+                      className="searchFilterContents"
+                      type="range"
+                      min="0.001"
+                      step="0.001"
+                      max={MAX}
+                      onInput={handleInput}
+                      style={getBackgroundSize()}
+                      value={priceRange}
+                    /> */}
+                    Min Price:{" "}
+                    <input
+                    style={{ width: "5%" }}
+                     className="text-input searchFilterContents"
+                      type="text"
+                      pattern="^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$"
+                      value={minValue}
+                      onChange={(e) => {
+                        set_minValue((p) =>
+                          e.target.validity.valid ? e.target.value : p
+                        );
+                      }}
+                    />{" "}
+                    Max Price:{" "}
+                    <input
+                    style={{ width: "5%" }}
+                      className="text-input searchFilterContents"
+                      type="text"
+                      pattern="^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$"
+                      value={maxValue}
+                      onChange={(e) => {
+                        set_maxValue((p) =>
+                          e.target.validity.valid ? e.target.value : p
+                        );
+                      }}
+                    />
+                    <button
+                      style={{ width: "10%" }}
+                      className="buy-btn searchFilterContents"
+                      onClick={(e) => filterDataWithName(searchField)}
+                    >
+                      Search
+                    </button>
+                  </div>
                   <div className="loader-container">
                     {loadingState ? <div className="loader"></div> : <></>}
                   </div>
-                  {domainListArray.length > 0 ? (
-                    domainListArray.map((item, index) => {
+                  {filteredArray.length > 0 ? (
+                    filteredArray.map((item, index) => {
                       return (
                         <div
                           className="col-sm"
