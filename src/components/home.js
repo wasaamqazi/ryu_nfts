@@ -24,8 +24,7 @@ function isJsonString(str) {
   }
   return true;
 }
-const MIN = 0.001;
-const MAX = 10;
+
 //Home Component
 const Home = (props) => {
   const history = useHistory();
@@ -43,24 +42,16 @@ const Home = (props) => {
   const [searchField, setSearchField] = useState("");
   const [searchPattern, setSearchPattern] = useState("(.*?)");
   const [filteredArray, setFilteredArray] = useState([]);
-  const [priceRange, setPriceRange] = useState(0.001);
-  const [minValue, set_minValue] = useState(0.001);
-  const [maxValue, set_maxValue] = useState(10);
+  const [minValue, set_minValue] = useState(0.0001);
+  const [maxValue, set_maxValue] = useState(100);
   //calling gateway pinata on page load
   useEffect(async () => {
     // //Getting NFTs from ipfs for marketplace
-    // updatedomainListArray([]);
     setLoadingState(true);
     await getData();
-    // const filtered2 = domainListArray.filter((obj) => {
-    //   return obj.name === "youtube.avax";
-    // });
-
-    // console.log("filtered2: ", filtered2);
   }, []);
   useEffect(async () => {
     setFilteredArray(domainListArray);
-    console.log(filteredArray);
   }, [domainListArray]);
   //GetData
   const getData = async () => {
@@ -86,15 +77,6 @@ const Home = (props) => {
           const data = await response.json();
           data.ipfsHash =
             "https://gateway.pinata.cloud/ipfs/" + e.ipfs_pin_hash;
-          // console.log(data);
-          // 👇️ filter with 1 condition
-          // const filtered = await Object.keys(data).filter((key) => {
-          //   // console.log(key);
-          //   if (key == "name") {
-          //     console.log(data[key]);
-          //     if (data[key].includes("youtube")) return data;
-          //   }
-          // });
 
           //Setting data into data state
           updatedomainListArray((existingItems) => {
@@ -157,38 +139,34 @@ const Home = (props) => {
     setShow(true);
   };
   // Triggered when the value gets updated while scrolling the slider:
-  const handleInput = (e) => {
-    setPriceRange(e.target.value);
-  };
+
   const multiRangeHandleInput = (e) => {
     set_minValue(e.minValue);
     set_maxValue(e.maxValue);
   };
   const filterDataWithName = async (searchField) => {
-    console.log(searchField);
-    console.log(priceRange);
-    setFilteredArray(
-      await domainListArray.filter((obj) => {
-        console.log(obj.price);
-        console.log(priceRange);
-        // return obj.name.includes(searchField) && obj.price === priceRange;
-        return (
-          obj.name.includes(searchField) &&
-          obj.price >= minValue &&
-          obj.price <= maxValue
-        );
-      })
-    );
-    console.log("filtered2: ", filteredArray);
+    if (loadingState) {
+      toast.info("🦄 Please Wait!", {
+        toastId: "info1",
+      });
+    } else {
+      setFilteredArray(
+        await domainListArray.filter((obj) => {
+          return (
+            obj.name.includes(searchField.toString().toLowerCase()) &&
+            obj.price >= minValue &&
+            obj.price <= maxValue
+          );
+        })
+      );
+    }
   };
   const handleKeyPress = async (e) => {
     if (e.key === "Enter") {
       await filterDataWithName(searchField);
     }
   };
-  const getBackgroundSize = () => {
-    return { backgroundSize: `${(priceRange * 100) / MAX}% 100%` };
-  };
+
   //Return Function
   return (
     <>
@@ -267,10 +245,7 @@ const Home = (props) => {
                 <div className="row">
                   {" "}
                   {/* Filter  */}
-                  <div
-                    className="col-sm"
-                    style={{ display: "flex", textAlign: "center" }}
-                  >
+                  <div className="col-sm customSearchDiv">
                     <input
                       style={{ width: "25%" }}
                       placeholder="Search"
@@ -288,8 +263,8 @@ const Home = (props) => {
                     {/* Price Range */}
                     <MultiRangeSlider
                       baseClassName="multi-range-slider customMultiRange searchFilterContents"
-                      min={0.001}
-                      max={10}
+                      min={0.0001}
+                      max={100}
                       step={0.001}
                       ruler={false}
                       label={true}
@@ -300,20 +275,11 @@ const Home = (props) => {
                         multiRangeHandleInput(e);
                       }}
                     />
-                    {/* <input
-                      className="searchFilterContents"
-                      type="range"
-                      min="0.001"
-                      step="0.001"
-                      max={MAX}
-                      onInput={handleInput}
-                      style={getBackgroundSize()}
-                      value={priceRange}
-                    /> */}
-                    Min Price:{" "}
+                    <label className="customLabel searchFilterContents">
+                      Min Price:
+                    </label>
                     <input
-                    style={{ width: "5%" }}
-                     className="text-input searchFilterContents"
+                      className="text-input searchFilterContents minAndMax"
                       type="text"
                       pattern="^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$"
                       value={minValue}
@@ -323,10 +289,11 @@ const Home = (props) => {
                         );
                       }}
                     />{" "}
-                    Max Price:{" "}
+                    <label className="customLabel searchFilterContents">
+                      Max Price:
+                    </label>
                     <input
-                    style={{ width: "5%" }}
-                      className="text-input searchFilterContents"
+                      className="text-input searchFilterContents minAndMax"
                       type="text"
                       pattern="^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$"
                       value={maxValue}
@@ -337,8 +304,7 @@ const Home = (props) => {
                       }}
                     />
                     <button
-                      style={{ width: "10%" }}
-                      className="buy-btn searchFilterContents"
+                      className="buy-btn searchFilterContents customSearchBtn"
                       onClick={(e) => filterDataWithName(searchField)}
                     >
                       Search
@@ -354,7 +320,7 @@ const Home = (props) => {
                           className="col-sm"
                           data-aos="flip-left"
                           data-aos-duration={count}
-                          key={item.id}
+                          key={index}
                         >
                           <div className="carb-body">
                             <div className="card-upper">

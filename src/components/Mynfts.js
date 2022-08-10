@@ -167,7 +167,7 @@ const Mynfts = (props) => {
                           className="col-sm"
                           data-aos="flip-right"
                           data-aos-duration="1000"
-                          key={item.id}
+                          key={index}
                         >
                           <div className="carb-body mynfts-card-body">
                             <div className="card-upper">

@@ -36,7 +36,7 @@ code {
 .domain-name {
   position: absolute;
 }
-input[type="range"] {
+/* input[type="range"] {
   -webkit-appearance: none;
   height: 7px;
   background: grey;
@@ -72,11 +72,50 @@ input[type="range"]::-webkit-slider-thumb:active {
   transition: box-shadow 350ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
     left 350ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
     bottom 350ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+} */
+@media screen and (min-width: 576px) {
+  .searchFilterContents {
+    margin-right: 2rem;
+    margin-bottom: 1rem;
+  }
+  .customMultiRange {
+    width: 25% !important;
+  }
+  .customLabel {
+    padding-top: 0.5rem;
+  }
+  .customSearchBtn {
+    width: 5%;
+    height: 58%;
+    padding: 0;
+    font-size: 15px;
+  }
+  .customSearchDiv {
+    display: flex;
+    text-align: center;
+  }
+  .minAndMax {
+    width: 5% !important;
+  }
 }
-.searchFilterContents {
-  margin-right: 2rem;
-  margin-bottom: 1rem;
-}
-.customMultiRange {
-  width: 25% !important;
+/*
+Media
+*/
+@media screen and (max-width: 1000px) {
+  .customSearchDiv {
+    display: grid;
+  }
+  .customSearchBtn {
+    width: 30%;
+    height: 70%;
+    padding: 0;
+    font-size: 15px;
+  }
+  .minAndMax {
+    width: 100% !important;
+  }
+  .searchFilterContents {
+    margin-right: 2rem;
+    margin-bottom: 1rem;
+  }
 }
