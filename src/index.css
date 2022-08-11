@@ -85,7 +85,7 @@ input[type="range"]::-webkit-slider-thumb:active {
     padding-top: 0.5rem;
   }
   .customSearchBtn {
-    width: 5%;
+    width: 7%;
     height: 58%;
     padding: 0;
     font-size: 15px;
@@ -93,6 +93,7 @@ input[type="range"]::-webkit-slider-thumb:active {
   .customSearchDiv {
     display: flex;
     text-align: center;
+    justify-content: center;
   }
   .minAndMax {
     width: 5% !important;

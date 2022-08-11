@@ -55,6 +55,7 @@ const Home = (props) => {
   }, [domainListArray]);
   //GetData
   const getData = async () => {
+    
     axios
       .get(`https://api.pinata.cloud/data/pinList?status=pinned`, {
         headers: {
@@ -247,7 +248,6 @@ const Home = (props) => {
                   {/* Filter  */}
                   <div className="col-sm customSearchDiv">
                     <input
-                     
                       placeholder="Search"
                       className="text-input searchFilterContents customSearchBar"
                       type="text"
